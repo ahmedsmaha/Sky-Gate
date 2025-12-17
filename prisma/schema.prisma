@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProductType {
+  PUBLIC
+  PRIVATE
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  sku           String      @unique @db.VarChar(50)
+  name          String      @db.VarChar(255)
+  description   String?     @db.Text
+  category      String      @db.VarChar(100)
+  price         Decimal     @db.Decimal(10, 2)
+  discountPrice Decimal?    @db.Decimal(10, 2)
+  quantity      Int         @default(0)
+  type          ProductType @default(PUBLIC)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([sku])
+  @@index([category])
+  @@index([type])
+  @@map("products")
+}
